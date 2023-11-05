@@ -32,10 +32,17 @@ int main(int argc, char *argv[]) {
     return EXIT_FAILURE;
   }
 
+  glfwMakeContextCurrent(window);
+
+  if (glewInit() != GLEW_OK) {
+    fprintf(stderr, "Failed to initialize GLEW\n");
+    return EXIT_FAILURE;
+  }
+
   // Tutorial 2
-  GLuint VertexArrayID;
-  glGenVertexArrays(1, &VertexArrayID);
-  glBindVertexArray(VertexArrayID);
+  GLuint vertex_id_array;
+  glGenVertexArrays(1, &vertex_id_array);
+  glBindVertexArray(vertex_id_array);
 
   static const GLfloat g_vertex_buffer_data[] = {-1.0, -1.0, 0.0, 1.0, -1.0,
                                                  0.0,  0.0,  1.0, 0.0};
@@ -47,13 +54,6 @@ int main(int argc, char *argv[]) {
                g_vertex_buffer_data, GL_STATIC_DRAW);
 
   // --------------------------
-
-  glfwMakeContextCurrent(window);
-
-  if (glewInit() != GLEW_OK) {
-    fprintf(stderr, "Failed to initialize GLEW\n");
-    return EXIT_FAILURE;
-  }
 
   do {
     glClear(GL_COLOR_BUFFER_BIT);
