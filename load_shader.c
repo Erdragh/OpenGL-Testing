@@ -10,21 +10,28 @@
 #include "load_shader.h"
 
 static const char *read_file_to_string(const char *file_path) {
-  size_t read_characters = 0;
-  char *read_line;
-
   FILE *file = fopen(file_path, "r");
   if (!file) {
     perror("fopen (vertex shader)");
     exit(EXIT_FAILURE);
   }
 
+  size_t read_buffer_length = 0;
+  int read_characters = 0;
+  char *read_line;
   char *read_file = NULL;
   size_t read_file_size = 0;
 
-  while (getline(&read_line, &read_characters, file) != -1) {
-    size_t new_length = read_file_size + read_characters + 1;
-    if (!realloc(read_file, new_length) || !read_file) {
+  // read_characters includes \0
+  while ((read_characters = getline(&read_line, &read_buffer_length, file)) !=
+         -1) {
+    // reading n characters (including \0) will make the string n characters
+    // longer only if the string was at length 0 before. Otherwise it will make
+    // it n - 1 characters longer
+    size_t new_length = read_file_size + read_characters;
+    if (read_file_size != 0)
+      new_length -= 1;
+    if (!(read_file = realloc(read_file, new_length))) {
       perror("realloc (vertex shader)");
       exit(EXIT_FAILURE);
     }
@@ -32,7 +39,7 @@ static const char *read_file_to_string(const char *file_path) {
     read_file_size = new_length;
     free(read_line);
     read_line = NULL;
-    read_characters = 0;
+    read_buffer_length = 0;
   }
 
   fclose(file);

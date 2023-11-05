@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
 
   if (window == NULL) {
     fprintf(stderr, "Failed to open GLFW window.\n");
+    getchar();
     glfwTerminate();
     return EXIT_FAILURE;
   }
@@ -36,13 +37,19 @@ int main(int argc, char *argv[]) {
 
   if (glewInit() != GLEW_OK) {
     fprintf(stderr, "Failed to initialize GLEW\n");
+    getchar();
+    glfwTerminate();
     return EXIT_FAILURE;
   }
 
+  glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+
+  glClearColor(0.0, 0.0, 0.4, 0.0);
+
   // Tutorial 2
-  GLuint vertex_id_array;
-  glGenVertexArrays(1, &vertex_id_array);
-  glBindVertexArray(vertex_id_array);
+  GLuint vertex_array_id;
+  glGenVertexArrays(1, &vertex_array_id);
+  glBindVertexArray(vertex_array_id);
 
   static const GLfloat g_vertex_buffer_data[] = {-1.0, -1.0, 0.0, 1.0, -1.0,
                                                  0.0,  0.0,  1.0, 0.0};
@@ -53,12 +60,16 @@ int main(int argc, char *argv[]) {
   glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data),
                g_vertex_buffer_data, GL_STATIC_DRAW);
 
+  GLuint program_id = load_shaders("vertex.glsl", "fragment.glsl");
+
   // --------------------------
 
   do {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Tutorial 2
+
+    glUseProgram(program_id);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -75,6 +86,12 @@ int main(int argc, char *argv[]) {
     glfwPollEvents();
   } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
+
+  glDeleteBuffers(1, &vertexbuffer);
+  glDeleteVertexArrays(1, &vertex_array_id);
+  glDeleteProgram(program_id);
+
+  glfwTerminate();
 
   return EXIT_SUCCESS;
 }
