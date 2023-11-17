@@ -22,15 +22,15 @@ static const char *read_file_to_string(const char *file_path) {
   char *read_file = NULL;
   size_t read_file_size = 0;
 
-  // read_characters includes \0
+  // read_characters doesn't include \0
   while ((read_characters = getline(&read_line, &read_buffer_length, file)) !=
          -1) {
     // reading n characters (including \0) will make the string n characters
     // longer only if the string was at length 0 before. Otherwise it will make
     // it n - 1 characters longer
     size_t new_length = read_file_size + read_characters;
-    if (read_file_size != 0)
-      new_length -= 1;
+    if (read_file_size == 0)
+      new_length += 1;
     if (!(read_file = realloc(read_file, new_length))) {
       perror("realloc (read_file_to_string)");
       exit(EXIT_FAILURE);
