@@ -32,11 +32,13 @@ static const char *read_file_to_string(const char *file_path) {
     if (read_file_size != 0)
       new_length -= 1;
     if (!(read_file = realloc(read_file, new_length))) {
-      perror("realloc (vertex shader)");
+      perror("realloc (read_file_to_string)");
       exit(EXIT_FAILURE);
     }
+    if (read_file_size == 0)
+      memset(read_file, 0, read_characters);
     // TODO: Copy string with strcat
-    strcpy(&read_file[read_file_size], read_line);
+    strcat(read_file, read_line);
     read_file_size = new_length;
     free(read_line);
     read_line = NULL;
