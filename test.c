@@ -83,6 +83,7 @@ int main(int argc, char *argv[]) {
     // -------------------------
 
     glfwSwapBuffers(window);
+    // TODO: Find out why this leaks memory
     glfwPollEvents();
   } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
            glfwWindowShouldClose(window) == 0);
