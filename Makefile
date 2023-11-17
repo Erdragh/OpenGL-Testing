@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 CC=cc
-CFLAGS=-g -O0 -Wall -pedantic -lglfw -lpthread -lGLEW -lGLU -lGL
+CFLAGS=-g -Og -march=native -Wall -pedantic -lglfw -fsanitize=address,undefined -lpthread -lGLEW -lGLU -lGL
 RM=rm
 
 all: test

@@ -35,6 +35,7 @@ static const char *read_file_to_string(const char *file_path) {
       perror("realloc (vertex shader)");
       exit(EXIT_FAILURE);
     }
+    // TODO: Copy string with strcat
     strcpy(&read_file[read_file_size], read_line);
     read_file_size = new_length;
     free(read_line);
